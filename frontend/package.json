@@ -1,5 +1,5 @@
 {
-  "name": "duyphan",
+  "name": "SMS",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -26,6 +26,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
+    "SMS": "file:",
     "web-vitals": "^5.0.0",
     "xlsx": "^0.18.5"
   },
