@@ -1,0 +1,83 @@
+/* Custom Theme for AG Grid */
+.ag-theme-custom {
+    --ag-foreground-color: #212529;
+    --ag-background-color: #f8f9fa;
+    --ag-header-foreground-color: white;
+    --ag-header-background-color: #0d6efd;
+    --ag-odd-row-background-color: #f3f3f3;
+    --ag-header-column-resize-handle-color: #0d6efd;
+
+    --ag-font-size: 14px;
+    --ag-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+    /* Borders */
+    --ag-borders: true;
+    --ag-border-color: #dee2e6;
+    --ag-row-border-color: #dee2e6;
+    --ag-cell-horizontal-border: solid 1px var(--ag-border-color);
+
+    /* Row hover color */
+    --ag-row-hover-color: rgba(13, 110, 253, 0.1);
+
+    /* Cell horizontal padding */
+    --ag-cell-horizontal-padding: 15px;
+
+    /* Selected row */
+    --ag-selected-row-background-color: rgba(13, 110, 253, 0.2);
+  }
+
+  /* Custom header style */
+  .ag-theme-custom .ag-header {
+    font-weight: 600;
+    border-bottom: 2px solid var(--ag-border-color);
+  }
+
+  /* Custom cell style */
+  .ag-theme-custom .ag-cell {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  /* Pagination styling */
+  .ag-theme-custom .ag-paging-panel {
+    color: var(--ag-foreground-color);
+    background-color: var(--ag-background-color);
+    padding: 12px;
+    border-top: 1px solid var(--ag-border-color);
+  }
+
+  /* Row selection checkbox */
+  .ag-theme-custom .ag-checkbox-input-wrapper {
+    border: 2px solid #6c757d;
+    border-radius: 3px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .ag-theme-custom .ag-checkbox-input-wrapper.ag-checked::after {
+    color: #0d6efd;
+    font-weight: bold;
+  }
+
+  /* Filter buttons */
+  .ag-theme-custom .ag-filter-toolpanel-search {
+    padding: 8px;
+  }
+
+  /* Hover effect on buttons */
+  .ag-theme-custom button:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+  }
+
+  /* Footer row count */
+  .ag-theme-custom .ag-paging-row-summary-panel {
+    font-weight: 600;
+  }
+
+  /* Make header text properly visible against the background */
+  .ag-theme-custom .ag-header-cell-text {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
