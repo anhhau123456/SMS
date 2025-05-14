@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
 const InputPopup = ({
+    showPopup,
+    setShowPopup,
     handleFileUpload
 }) => {
-    const [showPopup, setShowPopup] = useState(false);
     const [inputValue, setInputValue] = useState('');
 
     const handleSubmit = () => {

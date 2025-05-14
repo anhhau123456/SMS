@@ -48,7 +48,7 @@ export default function MyGrid() {
     }, []);
 
     
-    const handleGetSelected = async () => {
+    const handleSendSMS = async () => {
         const selectedRows = gridRef.current.api.getSelectedRows();
 
         if (message == '' || selectedRows.length == 0) {
@@ -57,7 +57,7 @@ export default function MyGrid() {
         } else {
             try {
                 const sendSMS = async () => {
-                    const response = await Api.sendSMS({
+                    await Api.sendSMS({
                         message: message,
                         data: selectedRows
                     });
@@ -105,7 +105,7 @@ export default function MyGrid() {
                         },
                     }}
                     className="ml-auto px-4 py-2 bg-blue-600 text-white rounded"
-                    onClick={() => handleGetSelected()}>
+                    onClick={() => handleSendSMS()}>
                     Send
                 </Button>
             </div>
