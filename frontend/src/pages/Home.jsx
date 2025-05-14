@@ -2,25 +2,16 @@ import { AgGridReact } from 'ag-grid-react';
 import { useEffect, useState, useRef } from 'react';
 import { themeMaterial } from 'ag-grid-community';
 import {
-    AppBar,
-    Toolbar,
     Button,
     TextField,
-    Typography,
-    IconButton,
-    Drawer,
-    List,
-    ListItem,
-    ListItemText,
   } from '@mui/material';
-
 
 import Api from '../api/Api';
 
-import InputPopup from '../components/InputPopup'
-
 export default function MyGrid() {
     const gridRef = useRef();
+
+    const [gridApi, setGridApi] = useState(null);
 
     const [rowData, setRowData] = useState([]);
 
@@ -46,25 +37,37 @@ export default function MyGrid() {
         fetchData()
     }, []);
 
+    const onGridReady = (params) => {
+        setGridApi(params.api); // save gridApi to state
+      };
+    
+      const deselectAllRows = () => {
+        gridApi?.deselectAll(); // safely call deselectAll
+      };
     
     const handleSendSMS = async () => {
         const selectedRows = gridRef.current.api.getSelectedRows();
 
         if (message == '' || selectedRows.length == 0) {
             // Show Error
-            console.log('error')
+            alert('Error');
         } else {
             try {
-                const sendSMS = async () => {
-                    await Api.sendSMS({
-                        message: message,
-                        data: selectedRows
-                    });
-                }
+                const response = await Api.sendSMS({
+                    message: message,
+                    data: selectedRows
+                });
 
-                sendSMS()
+                if (response.success) {
+                    // Clean all
+                    deselectAllRows();
+                    setMessage('')
+                    alert('Success');
+                } else {
+                    alert('Error');
+                }
             } catch (err) {
-                console.log('err', err)
+                alert('Error:', err);
             }
         }
     };
@@ -116,6 +119,7 @@ export default function MyGrid() {
                 pagination={true}
                 paginationPageSize={20}
                 rowSelection={"multiple"}
+                onGridReady={onGridReady}
             />
         </div>
     );

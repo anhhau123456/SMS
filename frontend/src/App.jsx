@@ -24,7 +24,6 @@ function App() {
     logout,
     isAuthenticated,
     isLoading,
-    user,
     error
   } = useAuth0();
   const [open, setOpen] = useState(false);

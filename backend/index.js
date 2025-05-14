@@ -49,13 +49,17 @@ app.get('/fetch-data', async (req, res) => {
 
 app.post('/send-sms', async (req, res) => {
 	const { data, message } = req.body;
+
 	try {
-		const response = await twilioClient.messages.create({
-			body: message,
-			from: process.env.TWILIO_PHONE_NUMBER,
-			to: to,
-		});
-		res.json({ success: true, sid: response.sid });
+		for (const client of data) {
+			await twilioClient.messages.create({
+				body: message,
+				from: process.env.TWILIO_PHONE_NUMBER,
+				to: `+${client.PhoneNumber.toString()}`
+			});
+		}
+
+		res.json({ success: true});
 	} catch (error) {
 		res.status(500).json({ success: false, error: error.message });
 	}
