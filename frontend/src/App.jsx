@@ -17,6 +17,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import './App.css'
 import Home from './pages/Home';
 import Import from './pages/Import';
+import LoadingOverlay from './components/LoadingOverlay';
 
 function App() {
   const {
@@ -33,7 +34,9 @@ function App() {
     return <div>Oops... {error.message}</div>;
   }
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return (
+    	<LoadingOverlay open={true}/>
+  );
 
   return (
     <div className="flex h-screen">

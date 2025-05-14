@@ -6,6 +6,7 @@ import {
     TextField,
   } from '@mui/material';
 
+import LoadingOverlay from '../components/LoadingOverlay'
 import Api from '../api/Api';
 
 export default function MyGrid() {
@@ -16,6 +17,8 @@ export default function MyGrid() {
     const [rowData, setRowData] = useState([]);
 
     const [message, setMessage] = useState('');
+
+    const [loading, setLoading] = useState(true);
 
     const colDefs = [
         {
@@ -33,6 +36,7 @@ export default function MyGrid() {
         const fetchData = async () => {
             const data = await Api.fetchData();
             setRowData(data.items);
+            setLoading(false)
         }
         fetchData()
     }, []);
@@ -46,6 +50,8 @@ export default function MyGrid() {
       };
     
     const handleSendSMS = async () => {
+        setLoading(true)
+
         const selectedRows = gridRef.current.api.getSelectedRows();
 
         if (message == '' || selectedRows.length == 0) {
@@ -70,6 +76,8 @@ export default function MyGrid() {
                 alert('Error:', err);
             }
         }
+
+        setLoading(false)
     };
 
     const aggridTheme = themeMaterial
@@ -85,6 +93,7 @@ export default function MyGrid() {
 
     return (
         <div className="ag-theme-alpine h-[calc(100vh-10rem)] " style={{ width: '100%' }}>
+            <LoadingOverlay open={loading} />
             <div className="flex items-center mb-4">
                 <div className="flex items-center mb-4 mr-4">
                     <TextField

@@ -10,11 +10,10 @@ import {
     Stack
   } from '@mui/material';
 
-
-
+  
 import Api from '../api/Api';
 
-import InputPopup from '../components/InputPopup'
+import LoadingOverlay from '../components/LoadingOverlay'
 
 export default function MyGrid() {
     const gridRef = useRef();
@@ -26,6 +25,8 @@ export default function MyGrid() {
     const [showInput, setShowInput] = useState(false);
 
     const [file, setFile] = useState(null);
+
+    const [loading, setLoading] = useState(true);
 
     const colDefs = [
         {
@@ -50,13 +51,16 @@ export default function MyGrid() {
     };
 
     const fetchData = async () => {
+        setLoading(true)
         const data = await Api.fetchData();
         setRowData(data.items);
+        setLoading(false)
     }
 
     const handleImportCSV = async () => {
         if (!file) return alert('No file selected');
 
+        setLoading(true)
         const formData = new FormData();
         formData.append('file', file);
 
@@ -68,6 +72,8 @@ export default function MyGrid() {
         } catch (err) {
             alert('Upload failed', err);
         }
+
+        setLoading(false)
     };
 
     const aggridTheme = themeMaterial
@@ -83,6 +89,7 @@ export default function MyGrid() {
 
     return (
         <div className="ag-theme-alpine h-[calc(100vh-10rem)] " style={{ width: '100%' }}>
+            <LoadingOverlay open={loading} />
             <div className="flex mb-4">
                 <div className="mr-4" >
                     <Button
