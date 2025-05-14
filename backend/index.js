@@ -9,6 +9,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
 const xlsx = require('xlsx');
+const features = require('./features');
 
 dotenv.config();
 const app = express();
@@ -91,6 +92,9 @@ app.post('/upload-csv', upload.single('file'), async (req, res) => {
 		const chunks = chunkArray(data, BATCH_SIZE);
 
 		fs.unlinkSync(filePath);
+
+		// Delete All existing items
+		await features.deleteAllItems();
 
 		for (const chunk of chunks) {
 			const requestItems = chunk.map(item => ({
