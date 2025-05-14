@@ -1,6 +1,6 @@
 import { AgGridReact } from 'ag-grid-react';
 import { useEffect, useState, useRef } from 'react';
-import * as XLSX from 'xlsx';
+import { CSVLink } from 'react-csv';
 import { themeMaterial } from 'ag-grid-community';
 import {
     AppBar,
@@ -28,6 +28,8 @@ import InputPopup from '../components/InputPopup'
 
 export default function MyGrid() {
     const gridRef = useRef();
+
+    const csvLinkRef = useRef();
 
     const [rowData, setRowData] = useState([]);
 
@@ -114,6 +116,7 @@ export default function MyGrid() {
                             backgroundColor: '#272168',
                         },
                     }}
+                    onClick={() => csvLinkRef.current.link.click()}
                     className="bg-blue-600 text-white rounded"
                 >
                     Export CSV
@@ -151,6 +154,19 @@ export default function MyGrid() {
                         </div>
                 </div>
             </Dialog>
+
+            <CSVLink
+                data={rowData}
+                headers={[
+                    { label: "Name", key: "Name" },
+                    { label: "PhoneNumber", key: "PhoneNumber" },
+                    { label: "Location", key: "Location" }
+                ]}
+                filename="Clients.csv"
+                className="hidden"
+                ref={csvLinkRef}
+                target="_blank"
+            />
         </div>
     );
   }
