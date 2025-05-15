@@ -9,7 +9,7 @@ import {
 import LoadingOverlay from '../components/LoadingOverlay'
 import Api from '../api/Api';
 
-export default function MyGrid() {
+export default function Home() {
     const gridRef = useRef();
 
     const [gridApi, setGridApi] = useState(null);
@@ -43,7 +43,7 @@ export default function MyGrid() {
 
     const onGridReady = (params) => {
         setGridApi(params.api); // save gridApi to state
-      };
+    };
     
       const deselectAllRows = () => {
         gridApi?.deselectAll(); // safely call deselectAll

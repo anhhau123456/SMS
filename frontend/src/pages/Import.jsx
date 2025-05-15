@@ -15,7 +15,7 @@ import Api from '../api/Api';
 
 import LoadingOverlay from '../components/LoadingOverlay'
 
-export default function MyGrid() {
+export default function Import() {
     const gridRef = useRef();
 
     const csvLinkRef = useRef();

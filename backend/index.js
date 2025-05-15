@@ -10,6 +10,7 @@ const csv = require('csv-parser');
 const path = require('path');
 const xlsx = require('xlsx');
 const features = require('./features');
+const { json } = require('stream/consumers');
 
 dotenv.config();
 const app = express();
@@ -37,11 +38,50 @@ app.get('/fetch-data', async (req, res) => {
 				TableName: 'Clients',
 				ExclusiveStartKey, // for pagination
 			}));
+
 			items = items.concat(data.Items);
 			ExclusiveStartKey = data.LastEvaluatedKey; // continue if more data exists
+
 		} while (ExclusiveStartKey);
 		
 		res.json({ success: true, items: items });
+	} catch (error) {
+		res.status(500).json({ success: false, error: error.message });
+	}
+});
+
+app.get('/fetch-histories', async (req, res) => {
+	try {
+		// Calculate date 7 days ago in ISO format
+		const sevenDaysAgo = new Date();
+		sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+		twilioClient.messages
+			.list({
+				dateSentAfter: sevenDaysAgo,
+				limit: 1000, // Adjust as needed
+			})
+			.then(messages => {
+				let sentMessages = messages.filter(msg => msg.direction.startsWith('outbound'));
+
+				sentMessages = sentMessages.map(msg => {
+					const dateSent = msg.dateSent.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+					return {
+						From: msg.from,
+						To: msg.to,
+						Body: msg.body,
+						Status: msg.status.toUpperCase(),
+						Date: dateSent
+					}
+				});
+
+				res.json({ success: true, sentMessages: sentMessages});
+			})
+			.catch(error => {
+				console.error('Error fetching messages:', error);
+				res.status(500).json({ success: false, error: error.message });
+			});
 	} catch (error) {
 		res.status(500).json({ success: false, error: error.message });
 	}

@@ -17,6 +17,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import './App.css'
 import Home from './pages/Home';
 import Import from './pages/Import';
+import History from './pages/History';
 import LoadingOverlay from './components/LoadingOverlay';
 
 function App() {
@@ -111,7 +112,7 @@ function App() {
                     <ListItem button onClick={() => setOpen(false)} component={Link} to="/">
                       <ListItemText primary="Home" />
                     </ListItem>
-                    <ListItem button onClick={() => setOpen(false)} component={Link} to="/">
+                    <ListItem button onClick={() => setOpen(false)} component={Link} to="/history">
                       <ListItemText primary="History" />
                     </ListItem>
                     <ListItem button onClick={() => setOpen(false)} component={Link} to="/import">
@@ -124,6 +125,7 @@ function App() {
                 <main className="flex-1 bg-gray-100 p-6">
                   <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/history" element={<History />} />
                     <Route path="/import" element={<Import />} />
                   </Routes>
                 </main>
