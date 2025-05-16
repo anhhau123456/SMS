@@ -92,6 +92,7 @@ app.post('/send-sms', async (req, res) => {
 	const { data, message } = req.body;
 	const footer = "\n\nReply STOP to opt out.";
 	const fullMessage = `${message}${footer}`;
+	const countryCode = '+1'
 
 	// Check outed out phone
 	let isSuccess = true;
@@ -103,7 +104,7 @@ app.post('/send-sms', async (req, res) => {
 				const res = await twilioClient.messages.create({
 					body: fullMessage,
 					from: process.env.TWILIO_PHONE_NUMBER,
-					to: `+${client.PhoneNumber.toString()}`
+					to: `${countryCode}${client.PhoneNumber.toString()}`
 				});
 
 			} catch (error) {
