@@ -23,8 +23,6 @@ const deleteAllItems = async () => {
     );
   
     let items = scanResult.Items;
-
-    console.log('items', items);
     
     if (items.length > 0) {
       const chunks = Array.from({ length: Math.ceil(items.length / 25) }, (_, i) =>

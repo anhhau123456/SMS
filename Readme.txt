@@ -4,7 +4,7 @@ SSH backend
 ssh -i '.\Backend Server.pem' ubuntu@ec2-54-219-44-193.us-west-1.compute.amazonaws.com
 
 Upload backend
-scp -i '.\Backend Server.pem' -r .\backend\ ubuntu@ec2-54-219-44-193.us-west-1.compute.amazonaws.com:~/backend
+scp -i '.\Backend Server.pem' -r .\backend\* ubuntu@ec2-54-219-44-193.us-west-1.compute.amazonaws.com:~/backend
 
 sudo apt update
 sudo apt upgrade -y
@@ -18,13 +18,22 @@ pm2 save
 sudo apt install nginx certbot python3-certbot-nginx -y
 sudo nano /etc/nginx/sites-available/default
 
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /etc/nginx/ssl/selfsigned.key \
+  -out /etc/nginx/ssl/selfsigned.crt
+
 Nginx Config
+sudo systemctl reload nginx
+
 server {
     listen 443 ssl;
     server_name ec2-54-219-44-193.us-west-1.compute.amazonaws.com;
 
     ssl_certificate /etc/nginx/ssl/selfsigned.crt;
     ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+    
+    client_max_body_size 50M;
 
     location / {
         proxy_pass http://localhost:5000;
