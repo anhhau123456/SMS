@@ -60,7 +60,7 @@ export default function Home() {
 
         if (message == '' || selectedRows.length == 0) {
             // Show Error
-            alert('Error');
+            alert("Error: Message is null or no row is selected.");
         } else {
             try {
                 const response = await Api.sendSMS({
@@ -72,14 +72,14 @@ export default function Home() {
                     // Clean all
                     deselectAllRows();
                     setMessage('')
-                    alert('Success');
+                    alert('Send message: success');
 
                 } else {
                     if (response.optedOut.length > 0) {
                         const message = response.optedOut.map((item, i) => `${i + 1}. ${item.PhoneNumber}`).join("\n");
                         alert("Opted-out phone numbers:\n" + message);
                     } else {
-                        alert('Error');
+                        alert('Can not send message');
                     }
                 }
             } catch (err) {
