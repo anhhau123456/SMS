@@ -6,11 +6,9 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { ScanCommand, PutCommand, DynamoDBDocumentClient, BatchWriteCommand  } = require('@aws-sdk/lib-dynamodb');
 const multer = require('multer');
 const fs = require('fs');
-const csv = require('csv-parser');
 const path = require('path');
 const xlsx = require('xlsx');
 const features = require('./features');
-const { json } = require('stream/consumers');
 
 dotenv.config();
 const app = express();
@@ -96,18 +94,20 @@ app.post('/send-sms', async (req, res) => {
 	const fullMessage = `${message}${footer}`;
 
 	// Check outed out phone
+	let isSuccess = true;
 	let optedOut = [];
 
 	try {
 		for (const client of data) {
 			try {
-				await twilioClient.messages.create({
+				const res = await twilioClient.messages.create({
 					body: fullMessage,
 					from: process.env.TWILIO_PHONE_NUMBER,
 					to: `+${client.PhoneNumber.toString()}`
 				});
+
 			} catch (error) {
-				if (error.code == 21610) {
+				if (error.code === 21610) {
 					// Write to Opted Out table
 					optedOut.push(client)
 
@@ -119,10 +119,12 @@ app.post('/send-sms', async (req, res) => {
 					const command = new PutCommand(params);
 					await docClient.send(command);
 				}
+
+				isSuccess = false;
 			}
 		}
 
-		res.json({ success: true, optedOut: optedOut});
+		res.json({ success: isSuccess, optedOut: optedOut});
 	} catch (error) {
 		res.status(500).json({ success: false, error: error.message });
 	}
