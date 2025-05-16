@@ -54,7 +54,7 @@ SSH frontend
 ssh -i '.\Backend Server.pem' ubuntu@ec2-54-219-241-106.us-west-1.compute.amazonaws.com
 
 Upload frontend
-scp -i '.\Backend Server.pem' -r .\frontend\dist ubuntu@ec2-54-219-241-106.us-west-1.compute.amazonaws.com:~/vite
+scp -i '.\Backend Server.pem' -r .\frontend\dist\* ubuntu@ec2-54-219-241-106.us-west-1.compute.amazonaws.com:~/vite
 
 # Frontend
 sudo chown -R www-data:www-data /home/ubuntu/app
