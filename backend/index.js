@@ -92,17 +92,37 @@ app.get('/fetch-histories', async (req, res) => {
 
 app.post('/send-sms', async (req, res) => {
 	const { data, message } = req.body;
+	const footer = "\n\nReply STOP to opt out.";
+	const fullMessage = `${message}${footer}`;
+
+	// Check outed out phone
+	let optedOut = [];
 
 	try {
 		for (const client of data) {
-			await twilioClient.messages.create({
-				body: message,
-				from: process.env.TWILIO_PHONE_NUMBER,
-				to: `+${client.PhoneNumber.toString()}`
-			});
+			try {
+				await twilioClient.messages.create({
+					body: fullMessage,
+					from: process.env.TWILIO_PHONE_NUMBER,
+					to: `+${client.PhoneNumber.toString()}`
+				});
+			} catch (error) {
+				if (error.code == 21610) {
+					// Write to Opted Out table
+					optedOut.push(client)
+
+					const params = {
+						TableName: "OptedOut",
+						Item: client
+					};
+
+					const command = new PutCommand(params);
+					await docClient.send(command);
+				}
+			}
 		}
 
-		res.json({ success: true});
+		res.json({ success: true, optedOut: optedOut});
 	} catch (error) {
 		res.status(500).json({ success: false, error: error.message });
 	}
@@ -146,7 +166,6 @@ app.post('/upload-csv', upload.single('file'), async (req, res) => {
 		await features.deleteAllItems();
 
 		for (const chunk of chunks) {
-			console.log(chunk)
 			const requestItems = chunk.map(item => ({
 				PutRequest: { Item: item },
 			}));

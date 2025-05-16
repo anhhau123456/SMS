@@ -72,7 +72,13 @@ export default function Home() {
                     // Clean all
                     deselectAllRows();
                     setMessage('')
-                    alert('Success');
+
+                    if (response.optedOut.length > 0) {
+                        const message = response.optedOut.map((item, i) => `${i + 1}. ${item.PhoneNumber}`).join("\n");
+                        alert("Opted-out phone numbers:\n" + message);
+                    } else {
+                        alert('Success');
+                    }
                 } else {
                     alert('Error');
                 }
