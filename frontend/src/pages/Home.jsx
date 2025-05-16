@@ -27,9 +27,13 @@ export default function Home() {
             pinned: 'left',
             field: 'Name',
             headerName: 'Name',
+            filter: true,
+            flex: 1,
+            cellStyle: { borderRight: '2px solid #ccc' }
         },
-        { field: "PhoneNumber" },
-        { field: "Location" }
+        { field: "PhoneNumber", filter: true , flex: 1, cellStyle: { borderRight: '2px solid #ccc' }},
+        { field: "Email", flex: 1, filter: true, cellStyle: { borderRight: '2px solid #ccc' }},
+        { field: "Location", flex: 1, filter: true, cellStyle: { borderRight: '2px solid #ccc' }}
     ]
 
     useEffect(() => {
@@ -126,7 +130,7 @@ export default function Home() {
                 rowData={rowData}
                 columnDefs={colDefs}
                 pagination={true}
-                paginationPageSize={20}
+                paginationPageSize={50}
                 rowSelection={"multiple"}
                 onGridReady={onGridReady}
             />

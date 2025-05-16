@@ -35,9 +35,13 @@ export default function Import() {
             pinned: 'left',
             field: 'Name',
             headerName: 'Name',
+            filter: true,
+            flex: 1,
+            cellStyle: { borderRight: '2px solid #ccc' }
         },
-        { field: "PhoneNumber" },
-        { field: "Location" }
+        { field: "PhoneNumber", filter: true , flex: 1, cellStyle: { borderRight: '2px solid #ccc' }},
+        { field: "Email", flex: 1, filter: true, cellStyle: { borderRight: '2px solid #ccc' }},
+        { field: "Location", flex: 1, filter: true, cellStyle: { borderRight: '2px solid #ccc' }}
     ]
 
 
@@ -125,7 +129,7 @@ export default function Import() {
                 rowData={rowData}
                 columnDefs={colDefs}
                 pagination={true}
-                paginationPageSize={20}
+                paginationPageSize={50}
                 rowSelection={"multiple"}
             />
             <Dialog open={showInput} onClose={() => setShowInput(false)}>
@@ -135,7 +139,7 @@ export default function Import() {
                         <Stack direction="row" spacing={2} alignItems="center">
                             <Button variant="contained" component="label">
                                 Upload File
-                                <input type="file" hidden accept=".csv" onChange={handleInputChange}/>
+                                <input type="file" hidden accept=".csv, .xls" onChange={handleInputChange}/>
                             </Button>
                             <Typography variant="body2" noWrap>
                                 {file ? file.name : 'No file chosen'}
@@ -159,7 +163,7 @@ export default function Import() {
                     { label: "PhoneNumber", key: "PhoneNumber" },
                     { label: "Location", key: "Location" }
                 ]}
-                filename="Clients.csv"
+                filename="Clients.xls"
                 className="hidden"
                 ref={csvLinkRef}
                 target="_blank"

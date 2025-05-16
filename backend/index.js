@@ -18,7 +18,10 @@ app.use(cors());
 app.use(express.json());
 const upload = multer({ dest: 'upload-csv/' });
 
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const twilioClient = twilio(
+	process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN
+);
+
 const dynamoDBClient = new DynamoDBClient({
 	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
 	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -130,7 +133,9 @@ app.post('/upload-csv', upload.single('file'), async (req, res) => {
 		// Convert PhoneNumber to string
 		data = data.map((row) => ({
 			...row,
-			PhoneNumber: row.PhoneNumber?.toString()
+			Name: row['Full Name'] ? row['Full Name'].toString() : row.Phone?.toString(),
+			PhoneNumber: row.Phone?.toString(),
+			Email: row.Email?.toString(),
 		}));
 
 		const chunks = chunkArray(data, BATCH_SIZE);
@@ -141,6 +146,7 @@ app.post('/upload-csv', upload.single('file'), async (req, res) => {
 		await features.deleteAllItems();
 
 		for (const chunk of chunks) {
+			console.log(chunk)
 			const requestItems = chunk.map(item => ({
 				PutRequest: { Item: item },
 			}));
@@ -160,9 +166,9 @@ app.post('/upload-csv', upload.single('file'), async (req, res) => {
 			} else {
 				console.log(`✅ Successfully wrote ${chunk.length} items`);
 			}
-
-			res.json({ success: true, rows: data });
 		}
+
+		res.json({ success: true, rows: data });
 
 		} catch (err) {
 			console.error('Error:', err);
@@ -171,5 +177,6 @@ app.post('/upload-csv', upload.single('file'), async (req, res) => {
 			}
 		}
 });
+
 
 app.listen(5000, () => console.log('Backend running on port 5000'));
