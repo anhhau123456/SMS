@@ -33,7 +33,14 @@ server {
     ssl_certificate /etc/nginx/ssl/selfsigned.crt;
     ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
     
-    client_max_body_size 50M;
+    keepalive_timeout       3600s;
+    client_header_timeout   3600s;
+    client_body_timeout     3600s;
+
+    proxy_connect_timeout   3600s;
+    proxy_send_timeout      3600s;
+    proxy_read_timeout      3600s;
+
 
     location / {
         proxy_pass http://localhost:5000;
