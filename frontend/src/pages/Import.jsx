@@ -158,11 +158,6 @@ export default function Import() {
 
             <CSVLink
                 data={rowData}
-                headers={[
-                    { label: "Name", key: "Name" },
-                    { label: "PhoneNumber", key: "PhoneNumber" },
-                    { label: "Location", key: "Location" }
-                ]}
                 filename="Clients.xls"
                 className="hidden"
                 ref={csvLinkRef}
