@@ -2,10 +2,13 @@ import axios from 'axios';
 
 const host = import.meta.env.VITE_HOST
 
-const fetchData = async () => {
+const fetchData = async (token) => {
     try {
         const response = await axios.get(`${host}/fetch-data`, {
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, 
+            }
         })
         return response.data;
     } catch (err) {

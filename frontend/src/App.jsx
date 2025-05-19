@@ -21,15 +21,23 @@ import History from './pages/History';
 import LoadingOverlay from './components/LoadingOverlay';
 
 function App() {
-  const {
-    loginWithRedirect,
-    logout,
-    isAuthenticated,
-    isLoading,
-    error
-  } = useAuth0();
-  const [open, setOpen] = useState(false);
-  const drawerWidth = 240;
+	const {
+		loginWithRedirect,
+		logout,
+		isAuthenticated,
+		isLoading,
+		error
+	} = useAuth0();
+	const [open, setOpen] = useState(false);
+	const drawerWidth = 240;
+
+  	const handleLogout = () => {
+		logout({
+			logoutParams: {
+			  	returnTo: window.location.origin,
+			}
+		});
+  	};
 
   if (error) {
     return <div>Oops... {error.message}</div>;
@@ -82,7 +90,7 @@ function App() {
                     },
                   }}
                   className="ml-auto px-4 py-2 bg-blue-600 text-white rounded"
-                  onClick={() => logout()}>
+                  onClick={handleLogout}>
                     Log Out
                 </Button>
               )}

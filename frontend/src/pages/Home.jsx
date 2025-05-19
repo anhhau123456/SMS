@@ -5,11 +5,16 @@ import {
     Button,
     TextField,
   } from '@mui/material';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import LoadingOverlay from '../components/LoadingOverlay'
 import Api from '../api/Api';
 
 export default function Home() {
+    const {
+        getAccessTokenSilently
+    } = useAuth0();
+
     const gridRef = useRef();
 
     const [gridApi, setGridApi] = useState(null);
@@ -38,7 +43,8 @@ export default function Home() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await Api.fetchData();
+            const token = await getAccessTokenSilently();
+            const data = await Api.fetchData(token);
             setRowData(data.items);
             setLoading(false)
         }
