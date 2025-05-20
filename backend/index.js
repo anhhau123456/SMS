@@ -10,26 +10,34 @@ const path = require('path');
 const xlsx = require('xlsx');
 const features = require('./features');
 
+const { auth } = require('express-oauth2-jwt-bearer');
+
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 const upload = multer({ dest: 'upload-csv/' });
 
+
 const twilioClient = twilio(
 	process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN
 );
 
+const checkJwt = auth({
+	audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+	issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+	tokenSigningAlg: 'RS256'
+});
+
+// Create Document client for easier usage
 const dynamoDBClient = new DynamoDBClient({
 	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
 	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 	region: process.env.AWS_REGION
 });
-
-// Create Document client for easier usage
 const docClient = DynamoDBDocumentClient.from(dynamoDBClient);
 
-app.get('/fetch-data', async (req, res) => {
+app.get('/fetch-data', checkJwt, async (req, res) => {
 	try {
 		let items = [];
 		let ExclusiveStartKey;
@@ -51,7 +59,7 @@ app.get('/fetch-data', async (req, res) => {
 	}
 });
 
-app.get('/fetch-histories', async (req, res) => {
+app.get('/fetch-histories', checkJwt , async (req, res) => {
 	try {
 		// Calculate date 7 days ago in ISO format
 		const sevenDaysAgo = new Date();
@@ -88,7 +96,7 @@ app.get('/fetch-histories', async (req, res) => {
 	}
 });
 
-app.post('/send-sms', async (req, res) => {
+app.post('/send-sms', checkJwt, async (req, res) => {
 	const { data, message } = req.body;
 	const footer = "\n\nReply STOP to opt out.";
 	const fullMessage = `${message}${footer}`;
@@ -131,7 +139,7 @@ app.post('/send-sms', async (req, res) => {
 	}
 });
 
-app.post('/upload-csv', upload.single('file'), async (req, res) => {
+app.post('/upload-csv', checkJwt, upload.single('file'), async (req, res) => {
 
 	if (!req.file) {
 		return res.status(400).send('No file uploaded');

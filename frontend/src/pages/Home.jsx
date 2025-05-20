@@ -43,8 +43,8 @@ export default function Home() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = await getAccessTokenSilently();
-            const data = await Api.fetchData(token);
+            const accessToken = await getAccessTokenSilently();
+            const data = await Api.fetchData(accessToken);
             setRowData(data.items);
             setLoading(false)
         }
@@ -62,6 +62,7 @@ export default function Home() {
     const handleSendSMS = async () => {
         setLoading(true)
 
+        const accessToken = await getAccessTokenSilently();
         const selectedRows = gridRef.current.api.getSelectedRows();
 
         if (message == '' || selectedRows.length == 0) {
@@ -72,7 +73,7 @@ export default function Home() {
                 const response = await Api.sendSMS({
                     message: message,
                     data: selectedRows
-                });
+                }, accessToken);
 
                 if (response.success) {
                     // Clean all

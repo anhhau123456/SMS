@@ -8,14 +8,18 @@ import {
     Dialog, 
     DialogTitle, 
     Stack
-  } from '@mui/material';
-
+} from '@mui/material';
+import { useAuth0 } from '@auth0/auth0-react';
   
 import Api from '../api/Api';
 
 import LoadingOverlay from '../components/LoadingOverlay'
 
 export default function Import() {
+    const {
+        getAccessTokenSilently
+    } = useAuth0();
+
     const gridRef = useRef();
 
     const csvLinkRef = useRef();
@@ -55,8 +59,9 @@ export default function Import() {
     };
 
     const fetchData = async () => {
+        const accessToken = await getAccessTokenSilently();
         setLoading(true)
-        const data = await Api.fetchData();
+        const data = await Api.fetchData(accessToken);
         setRowData(data.items);
         setLoading(false)
     }
@@ -64,12 +69,13 @@ export default function Import() {
     const handleImportCSV = async () => {
         if (!file) return alert('No file selected');
 
+        const accessToken = await getAccessTokenSilently();
         setLoading(true)
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            await Api.uploadFile(formData);
+            await Api.uploadFile(formData,accessToken);
             setFile(null)
             setShowInput(false);
             await fetchData();

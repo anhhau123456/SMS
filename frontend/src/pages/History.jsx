@@ -1,12 +1,17 @@
 import { AgGridReact } from 'ag-grid-react';
 import { useEffect, useState, useRef } from 'react';
 import { themeMaterial } from 'ag-grid-community';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import LoadingOverlay from '../components/LoadingOverlay'
 import Api from '../api/Api';
 
 
 export default function Import() {
+    const {
+        getAccessTokenSilently
+    } = useAuth0();
+
     const gridRef = useRef();
 
     const [rowData, setRowData] = useState([]);
@@ -53,7 +58,8 @@ export default function Import() {
 
     useEffect(() => {
         const fetchHistories = async () => {
-            const data = await Api.fetchHistories();
+            const accessToken = await getAccessTokenSilently();
+            const data = await Api.fetchHistories(accessToken);
             setRowData(data.sentMessages);
             setLoading(false)
         }
